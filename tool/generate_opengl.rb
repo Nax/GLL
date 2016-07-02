@@ -15,11 +15,11 @@ functions_in.each_line do |line|
 end
 
 header_defs = functions.map do |func|
-  "extern #{gl_type func} #{func};"
+  "GLL_API extern #{gl_type func} #{func};"
 end
 
 source_defs = functions.map do |func|
-  "#{gl_type func} #{func} = 0;"
+  "GLL_API #{gl_type func} #{func} = 0;"
 end
 
 source_body = "\nGLL_API void GLL_LoadAllFunctions(void)\n{\n"
