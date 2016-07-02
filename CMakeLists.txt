@@ -7,7 +7,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 find_package(OpenGL)
 
-include_directories(include)
 include_directories(src)
 
 file(GLOB_RECURSE HEADERS "include/**/*.h")
@@ -19,18 +18,28 @@ if (WIN32)
     list(APPEND SOURCES src/GLL_Windows.c)
 endif()
 
-add_library(GLL_static STATIC ${SOURCES} ${HEADERS})
 add_library(GLL SHARED ${SOURCES} ${HEADERS})
+add_library(GLL-static STATIC ${SOURCES} ${HEADERS})
 
-target_link_libraries(GLL ${OPENGL_LIBRARY})
+target_include_directories(GLL PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+target_include_directories(GLL-static PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
 
-target_compile_definitions(GLL_static PUBLIC -DGLL_STATIC)
+target_link_libraries(GLL PUBLIC ${OPENGL_LIBRARY})
+target_link_libraries(GLL-static INTERFACE ${OPENGL_LIBRARY})
+
+target_compile_definitions(GLL-static PUBLIC -DGLL_STATIC)
 target_compile_definitions(GLL PRIVATE -DGLL_EXPORT)
 
 if (WIN32)
-    set_target_properties(GLL_static PROPERTIES OUTPUT_NAME GLL-s)
+    set_target_properties(GLL PROPERTIES DEBUG_POSTFIX -d)
+    set_target_properties(GLL-static PROPERTIES DEBUG_POSTFIX -d)
+    set_target_properties(GLL-static PROPERTIES OUTPUT_NAME GLL-static)
 else ()
-    set_target_properties(GLL_static PROPERTIES OUTPUT_NAME GLL)
+    set_target_properties(GLL-static PROPERTIES OUTPUT_NAME GLL)
 endif ()
 
 add_custom_command(
@@ -71,10 +80,14 @@ add_custom_command(
     )
 
 install(
-    TARGETS GLL GLL_static
+    TARGETS GLL GLL-static
+    EXPORT GLL-targets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
 
+install(EXPORT GLL-targets DESTINATION lib/GLL)
+
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/GLL" DESTINATION include)
+install(FILES "${CMAKE_SOURCE_DIR}/cmake/GLL-config.cmake" DESTINATION lib/GLL)
 
