@@ -1,0 +1,16 @@
+#ifndef GLL_OPENGL_H
+#define GLL_OPENGL_H
+
+#ifdef _WIN32
+# include <windows.h>
+# include <GL/gl.h>
+# include <GLL/GL/glext.h>
+# include <GLL/GL/wglext.h>
+#endif
+
+#include <GLL/GLL_API.h>
+
+
+%%
+
+#endif
