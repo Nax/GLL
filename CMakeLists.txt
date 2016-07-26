@@ -18,28 +18,28 @@ if (WIN32)
     list(APPEND SOURCES src/GLL_Windows.c)
 endif()
 
-add_library(GLL SHARED ${SOURCES} ${HEADERS})
-add_library(GLL-static STATIC ${SOURCES} ${HEADERS})
+add_library(gll SHARED ${SOURCES} ${HEADERS})
+add_library(gll-static STATIC ${SOURCES} ${HEADERS})
 
-target_include_directories(GLL PUBLIC
+target_include_directories(gll PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-target_include_directories(GLL-static PUBLIC
+target_include_directories(gll-static PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(GLL PUBLIC ${OPENGL_LIBRARY})
-target_link_libraries(GLL-static INTERFACE ${OPENGL_LIBRARY})
+target_link_libraries(gll PUBLIC ${OPENGL_LIBRARY})
+target_link_libraries(gll-static INTERFACE ${OPENGL_LIBRARY})
 
-target_compile_definitions(GLL-static PUBLIC -DGLL_STATIC)
-target_compile_definitions(GLL PRIVATE -DGLL_EXPORT)
+target_compile_definitions(gll-static PUBLIC -DGLL_STATIC)
+target_compile_definitions(gll PRIVATE -DGLL_EXPORT)
 
 if (WIN32)
-    set_target_properties(GLL PROPERTIES DEBUG_POSTFIX -d)
-    set_target_properties(GLL-static PROPERTIES DEBUG_POSTFIX -d)
-    set_target_properties(GLL-static PROPERTIES OUTPUT_NAME GLL-static)
+    set_target_properties(gll PROPERTIES DEBUG_POSTFIX -d)
+    set_target_properties(gll-static PROPERTIES DEBUG_POSTFIX -d)
+    set_target_properties(gll-static PROPERTIES OUTPUT_NAME GLL-static)
 else ()
-    set_target_properties(GLL-static PROPERTIES OUTPUT_NAME GLL)
+    set_target_properties(gll-static PROPERTIES OUTPUT_NAME GLL)
 endif ()
 
 add_custom_command(
@@ -80,14 +80,14 @@ add_custom_command(
     )
 
 install(
-    TARGETS GLL GLL-static
-    EXPORT GLL-targets
+    TARGETS gll gll-static
+    EXPORT gll-targets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
 
-install(EXPORT GLL-targets DESTINATION lib/GLL)
+install(EXPORT gll-targets DESTINATION cmake)
 
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/GLL" DESTINATION include)
-install(FILES "${CMAKE_SOURCE_DIR}/cmake/GLL-config.cmake" DESTINATION lib/GLL)
+install(FILES "${CMAKE_SOURCE_DIR}/cmake/GLL-config.cmake" DESTINATION cmake)
 
