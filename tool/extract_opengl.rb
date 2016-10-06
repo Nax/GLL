@@ -13,7 +13,6 @@ ARGV.each do |f|
   end
 end
 
-defs.sort!
+defs.map!{|d| d + "\n"}.sort!
 
-File.write(outfile, defs.join("\n"))
-
+File.write(outfile, defs.join(""), binmode: true)

@@ -31,6 +31,5 @@ source_body += "}\n"
 header_data = header_defs.join("\n")
 source_data = source_defs.join("\n") + "\n" + source_body
 
-File.write(ARGV.shift, header_in.sub('%%', header_data))
-File.write(ARGV.shift, source_in.sub('%%', source_data))
-
+File.write(ARGV.shift, header_in.sub('%%', header_data), binmode: true)
+File.write(ARGV.shift, source_in.sub('%%', source_data), binmode: true)
